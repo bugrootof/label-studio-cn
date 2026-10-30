@@ -24,6 +24,12 @@ export const API_CONFIG = {
     deleteProject: "DELETE:/projects/:pk",
     projectResetCache: "POST:/projects/:pk/summary/reset",
 
+    // Project members (role-based: annotator / reviewer / manager)
+    projectMembers: "/projects/:pk/members",
+    addProjectMember: "POST:/projects/:pk/members",
+    updateProjectMember: "PATCH:/projects/:pk/members/:memberPk",
+    deleteProjectMember: "DELETE:/projects/:pk/members/:memberPk",
+
     // Presigning
     presignUrlForTask: "/../tasks/:taskID/presign",
     presignUrlForProject: "/../projects/:projectId/presign",

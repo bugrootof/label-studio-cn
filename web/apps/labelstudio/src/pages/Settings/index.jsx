@@ -4,6 +4,7 @@ import { DangerZone } from "./DangerZone";
 import { GeneralSettings } from "./GeneralSettings";
 import { AnnotationSettings } from "./AnnotationSettings";
 import { LabelingSettings } from "./LabelingSettings";
+import { MembersSettings } from "./MembersSettings";
 import { MachineLearningSettings } from "./MachineLearningSettings/MachineLearningSettings";
 import { PredictionsSettings } from "./PredictionsSettings/PredictionsSettings";
 import { StorageSettings } from "./StorageSettings/StorageSettings";
@@ -14,6 +15,7 @@ export const MenuLayout = ({ children, ...routeProps }) => {
     <SidebarMenu
       menuItems={[
         GeneralSettings,
+        MembersSettings,
         LabelingSettings,
         AnnotationSettings,
         MachineLearningSettings,
@@ -31,6 +33,7 @@ export const MenuLayout = ({ children, ...routeProps }) => {
 const pages = {
   AnnotationSettings,
   LabelingSettings,
+  MembersSettings,
   MachineLearningSettings,
   PredictionsSettings,
   StorageSettings,

@@ -32,13 +32,14 @@ from projects.functions.search import search_projects
 from projects.functions.stream_history import get_label_stream_history
 from projects.functions.utils import recalculate_created_annotations_and_labels_from_scratch
 from projects.import_health import ensure_import_job_statuses, health_check_import_job
-from projects.models import Project, ProjectImport, ProjectManager, ProjectReimport, ProjectSummary
+from projects.models import Project, ProjectImport, ProjectManager, ProjectMember, ProjectReimport, ProjectSummary
 from projects.serializers import (
     GetFieldsSerializer,
     ProjectCountsSerializer,
     ProjectImportListSerializer,
     ProjectImportSerializer,
     ProjectLabelConfigSerializer,
+    ProjectMemberSerializer,
     ProjectModelVersionExtendedSerializer,
     ProjectModelVersionParamsSerializer,
     ProjectReimportListSerializer,
@@ -47,7 +48,7 @@ from projects.serializers import (
     ProjectSummarySerializer,
 )
 from rest_framework import filters, generics, status
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.exceptions import ValidationError as RestValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
@@ -469,6 +470,8 @@ class ProjectNextTaskAPI(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         project = self.get_object()
+        if not request.user.can_annotate(project):
+            raise PermissionDenied('You are not assigned as an annotator for this project.')
         dm_queue = filters_ordering_selected_items_exist(request.data)
         prepared_tasks = get_prepared_queryset(request, project)
 
@@ -1173,3 +1176,55 @@ class ProjectAnnotatorsAPI(generics.RetrieveAPIView):
         )
         data = UserSimpleSerializer(users, many=True, context={'request': request}).data
         return Response(data)
+
+
+class ProjectMemberListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
+    parent_queryset = Project.objects.all()
+    permission_required = ViewClassPermission(
+        GET=all_permissions.projects_view,
+        POST=all_permissions.projects_change,
+    )
+    serializer_class = ProjectMemberSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return ProjectMember.objects.filter(project=self.parent_object).select_related('user').order_by('id')
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['project'] = self.parent_object
+        return context
+
+    def perform_create(self, serializer):
+        project = self.parent_object
+        if not self.request.user.is_project_manager(project):
+            raise PermissionDenied('Only project managers can add members.')
+        serializer.save(project=project)
+
+
+class ProjectMemberAPI(GetParentObjectMixin, generics.RetrieveUpdateDestroyAPIView):
+    parent_queryset = Project.objects.all()
+    permission_required = ViewClassPermission(
+        GET=all_permissions.projects_view,
+        PATCH=all_permissions.projects_change,
+        PUT=all_permissions.projects_change,
+        DELETE=all_permissions.projects_change,
+    )
+    serializer_class = ProjectMemberSerializer
+    parent_lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'member_pk'
+
+    def get_queryset(self):
+        return ProjectMember.objects.filter(project=self.parent_object).select_related('user')
+
+    def perform_update(self, serializer):
+        project = self.parent_object
+        if not self.request.user.is_project_manager(project):
+            raise PermissionDenied('Only project managers can change member roles.')
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        project = self.parent_object
+        if not self.request.user.is_project_manager(project):
+            raise PermissionDenied('Only project managers can remove members.')
+        instance.delete()

@@ -1472,13 +1472,30 @@ class ProjectHotkeyPreference(models.Model):
 
 
 class ProjectMember(models.Model):
+    ROLE_ANNOTATOR = 'annotator'
+    ROLE_REVIEWER = 'reviewer'
+    ROLE_MANAGER = 'manager'
+    ROLE_CHOICES = [
+        (ROLE_ANNOTATOR, 'Annotator'),
+        (ROLE_REVIEWER, 'Reviewer'),
+        (ROLE_MANAGER, 'Manager'),
+    ]
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='project_memberships', help_text='User ID'
     )
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='members', help_text='Project ID')
+    role = models.CharField(max_length=16, choices=ROLE_CHOICES, default=ROLE_ANNOTATOR, help_text='Project member role')
     enabled = models.BooleanField(default=True, help_text='Project member is enabled')
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'project')
+
+    def has_permission(self, user):
+        # A project member entry is visible to other project members and managers.
+        return user.is_project_annotator(self.project)
 
 
 def _build_flat_increment_sql(column, keys):

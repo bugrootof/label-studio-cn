@@ -32,7 +32,7 @@ from label_studio_sdk.label_interface.control_tags import (
     VideoRectangleTag,
 )
 from organizations.models import Organization
-from projects.models import Project, ProjectImport, ProjectOnboarding, ProjectReimport, ProjectSummary
+from projects.models import Project, ProjectImport, ProjectMember, ProjectOnboarding, ProjectReimport, ProjectSummary
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 from rest_framework.serializers import SerializerMethodField
@@ -576,3 +576,40 @@ class GetFieldsSerializer(serializers.Serializer):
     def validate_filter(self, value):
         if value in ['all', 'pinned_only', 'exclude_pinned']:
             return value
+
+
+class ProjectMemberSerializer(serializers.ModelSerializer):
+    user = UserSimpleSerializer(read_only=True)
+    user_id = serializers.IntegerField(write_only=True, required=False)
+
+    class Meta:
+        model = ProjectMember
+        fields = ('id', 'user', 'user_id', 'role', 'enabled', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at')
+
+    def validate_role(self, value):
+        if value not in dict(ProjectMember.ROLE_CHOICES):
+            raise serializers.ValidationError(
+                f'Invalid role. Choose one of: {list(dict(ProjectMember.ROLE_CHOICES))}'
+            )
+        return value
+
+    def create(self, validated_data):
+        from users.models import User
+
+        user_id = validated_data.pop('user_id', None)
+        project = validated_data.pop('project', None)
+        if user_id is None:
+            raise serializers.ValidationError({'user_id': 'This field is required.'})
+        if project is None:
+            raise serializers.ValidationError({'project': 'This field is required.'})
+        user = User.objects.get(pk=user_id)
+        member, _ = ProjectMember.objects.update_or_create(
+            project=project,
+            user=user,
+            defaults={
+                'role': validated_data.get('role', ProjectMember.ROLE_ANNOTATOR),
+                'enabled': validated_data.get('enabled', True),
+            },
+        )
+        return member

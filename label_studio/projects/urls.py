@@ -49,6 +49,9 @@ _api_urlpatterns = [
     path('<int:pk>/model-versions/', api.ProjectModelVersions.as_view(), name='project-model-versions'),
     # List all annotators for project
     path('<int:pk>/annotators/', api.ProjectAnnotatorsAPI.as_view(), name='project-annotators'),
+    # Project members management (role-based: annotator / reviewer / manager)
+    path('<int:pk>/members/', api.ProjectMemberListAPI.as_view(), name='project-member-list'),
+    path('<int:pk>/members/<int:member_pk>/', api.ProjectMemberAPI.as_view(), name='project-member-detail'),
 ]
 
 _api_urlpatterns_templates = [

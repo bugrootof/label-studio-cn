@@ -72,7 +72,9 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-label-studio-sdk = { git = "https://github.com/HumanSignal/label-studio-sdk.git", rev = "cba708faa066840233cf59cfdc0fee0e122f5489" }
+# NOTE(temporary): switched to a PyPI release because cloning the pinned commit from
+# GitHub kept failing in this network environment. Revert to the git pin when possible:
+# label-studio-sdk = { git = "https://github.com/HumanSignal/label-studio-sdk.git", rev = "cba708faa066840233cf59cfdc0fee0e122f5489" }
 
 [project.optional-dependencies]
 uwsgi = [
