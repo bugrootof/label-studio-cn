@@ -133,15 +133,15 @@ export const SkipButton = memo(
     const tooltip: string = overlapReached
       ? store.overlapReachedMessage
       : canSkip
-        ? "Cancel (skip) task [ Ctrl+Space ]"
-        : "This task cannot be skipped";
+        ? "取消（跳过）任务 [ Ctrl+Space ]"
+        : "此任务无法跳过";
 
     const showInfoIcon = skipDisabled && hasForceSkipPermission;
 
     return (
       <>
         {showInfoIcon && (
-          <Tooltip title="Annotators and Reviewers will not be able to skip this task">
+          <Tooltip title="标注员和审核员将无法跳过此任务">
             <IconInfoOutline width={20} height={20} className="text-neutral-content ml-auto cursor-pointer" />
           </Tooltip>
         )}
@@ -175,7 +175,7 @@ export const SkipButton = memo(
           }}
           data-testid="bottombar-skip-button"
         >
-          Skip
+          跳过
         </Button>
       </>
     );

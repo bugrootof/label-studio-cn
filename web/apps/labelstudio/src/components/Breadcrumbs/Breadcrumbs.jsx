@@ -5,11 +5,13 @@ import { useBreadcrumbs, useFindRouteComponent } from "../../providers/RoutesPro
 import { cn } from "../../utils/bem";
 import { absoluteURL } from "../../utils/helpers";
 import { Dropdown } from "@humansignal/ui";
+import { useTranslation } from "@humansignal/core";
 import { Menu } from "../Menu/Menu";
 import "./Breadcrumbs.prefix.css";
 
 export const Breadcrumbs = () => {
   const config = useConfig();
+  const { t } = useTranslation();
   const reactBreadcrumbs = useBreadcrumbs();
   const findComponent = useFindRouteComponent();
   const [breadcrumbs, setBreadcrumbs] = useState(reactBreadcrumbs);
@@ -42,7 +44,7 @@ export const Breadcrumbs = () => {
                 .mod({ faded: index === item.length - 1 })
                 .toClassName()}
             >
-              {item.title}
+              {typeof item.title === "string" ? t(item.title) : item.title}
             </span>
           );
 
@@ -59,7 +61,7 @@ export const Breadcrumbs = () => {
                   return (
                     <Menu.Item
                       key={`${index}-${item.title}`}
-                      label={sub.title}
+                      label={typeof sub.title === "string" ? t(sub.title) : sub.title}
                       icon={sub.icon}
                       href={sub.href ?? sub.path}
                       active={sub.active}

@@ -29,7 +29,7 @@ import "./Menubar.prefix.css";
 import "./MenuContent.prefix.css";
 import "./MenuSidebar.prefix.css";
 import { pages } from "@humansignal/app-common";
-import { ff } from "@humansignal/core";
+import { ff, i18n, LS_LOCALE_STORAGE_KEY, useTranslation } from "@humansignal/core";
 import { openHotkeyHelp } from "@humansignal/app-common/pages/AccountSettings/sections/Hotkeys/Help";
 
 export const MenubarContext = createContext();
@@ -53,10 +53,16 @@ const RightContextMenu = ({ className, ...props }) => {
 };
 
 export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSidebarToggle, onSidebarPin }) => {
+  const { t, i18n: i18nInstance } = useTranslation();
   const menuDropdownRef = useRef();
   const useMenuRef = useRef();
   const { user, isLoading } = useAuth();
   const location = useFixedLocation();
+
+  const changeLanguage = useCallback((lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem(LS_LOCALE_STORAGE_KEY, lng);
+  }, []);
 
   const _config = useConfig();
   const [sidebarOpened, setSidebarOpened] = useState(defaultOpened ?? false);
@@ -152,7 +158,7 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
               <Button
                 variant="neutral"
                 look="outlined"
-                tooltip="Keyboard Shortcuts"
+                tooltip={t("Keyboard Shortcuts")}
                 data-testid="hotkeys-button"
                 size="small"
                 onClick={() => {
@@ -181,11 +187,15 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
               <Menu>
                 <Menu.Item
                   icon={<IconPersonInCircle />}
-                  label="Account &amp; Settings"
+                  label={t("Account & Settings")}
                   href={pages.AccountSettingsPage.path}
                 />
+                <Menu.Divider />
+                <Menu.Item onClick={() => changeLanguage("zh-CN")}>中文</Menu.Item>
+                <Menu.Item onClick={() => changeLanguage("en")}>English</Menu.Item>
+                <Menu.Divider />
                 {/* <Menu.Item label="Dark Mode"/> */}
-                <Menu.Item icon={<IconDoor />} label="Log Out" href={absoluteURL("/logout")} data-external />
+                <Menu.Item icon={<IconDoor />} label={t("Log Out")} href={absoluteURL("/logout")} data-external />
                 {showNewsletterDot && (
                   <>
                     <Menu.Divider />
@@ -221,9 +231,9 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
               style={{ width: 240 }}
             >
               <Menu>
-                <Menu.Item label="Home" to="/" icon={<IconHome />} data-external exact />
-                <Menu.Item label="Projects" to="/projects" icon={<IconFolder />} data-external exact />
-                <Menu.Item label="Organization" to="/organization" icon={<IconPeople />} data-external exact />
+                <Menu.Item label={t("Home")} to="/" icon={<IconHome />} data-external exact />
+                <Menu.Item label={t("Projects")} to="/projects" icon={<IconFolder />} data-external exact />
+                <Menu.Item label={t("Organization")} to="/organization" icon={<IconPeople />} data-external exact />
 
                 <Menu.Spacer />
 
@@ -244,7 +254,7 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
                   rel="noreferrer"
                 />
                 <Menu.Item
-                  label="Slack Community"
+                  label={t("Slack Community")}
                   href="https://slack.labelstud.io/?source=product-menu"
                   icon={<IconSlack />}
                   target="_blank"
@@ -261,7 +271,7 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
                   onClick={sidebarPin}
                   active={sidebarPinned}
                 >
-                  {sidebarPinned ? "Unpin menu" : "Pin menu"}
+                  {sidebarPinned ? t("Unpin menu") : t("Pin menu")}
                 </Menu.Item>
               </Menu>
             </Dropdown>

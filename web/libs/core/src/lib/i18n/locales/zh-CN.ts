@@ -1,0 +1,82 @@
+// Chinese (Simplified) translations.
+// Keys are the original English strings; missing keys fall back to the English source.
+export const zhCN: Record<string, string> = {
+  // Navigation
+  "Home": "首页",
+  "Projects": "项目",
+  "Organization": "组织",
+  "Settings": "设置",
+  "Models": "模型",
+  "Model": "模型",
+  "People": "成员",
+  "Members": "成员",
+  "Account & Settings": "账户与设置",
+  "Log Out": "退出登录",
+  "Keyboard Shortcuts": "键盘快捷键",
+  "Slack Community": "Slack 社区",
+  "Unpin menu": "取消固定菜单",
+  "Pin menu": "固定菜单",
+
+  // Projects
+  "Create": "创建",
+  "Create project": "创建项目",
+  "Create Project": "创建项目",
+  "Create new project": "创建新项目",
+  "New project": "新项目",
+  "Label": "标注",
+  "Project Name": "项目名称",
+  "Description": "描述",
+  "No projects found": "暂无项目",
+  "Create a project to start labeling": "创建一个项目开始标注",
+  "Heidi doesn't see any projects here!": "Heidi 在这里没有看到任何项目！",
+  "Create one and start labeling your data.": "创建一个项目，开始标注你的数据。",
+
+  // Settings / General
+  "General": "常规",
+  "General Settings": "常规设置",
+  "Labeling Interface": "标注界面",
+  "Annotation": "标注",
+  "Predictions": "预测",
+  "Cloud Storage": "云存储",
+  "Webhooks": "Webhook",
+  "Danger Zone": "危险操作",
+  "Save": "保存",
+  "Saved!": "已保存！",
+  "Color": "颜色",
+  "Task Sampling": "任务采样",
+  "Sequential": "顺序",
+  "Random": "随机",
+  "Tasks are ordered by Task ID": "任务按任务 ID 排序",
+  "Tasks are chosen with uniform random": "任务以均匀随机方式选择",
+  "Save general settings": "保存常规设置",
+
+  // Members (role-based access control)
+  "Add Member": "添加成员",
+  "Remove": "移除",
+  "User": "用户",
+  "Role": "角色",
+  "Annotator": "标注员",
+  "Reviewer": "审核员",
+  "Manager": "管理员",
+  "Select a user...": "选择用户...",
+  "No members assigned. This project is currently open to all organization members.":
+    "尚未分配成员。此项目当前对所有组织成员开放。",
+  "Control who can annotate and review tasks in this project. When members are assigned here, only those members (and the project owner) can annotate or review.":
+    "控制谁可以在此项目中标注和审核任务。在此分配成员后，只有这些成员（以及项目创建者）可以标注或审核。",
+
+  // Common actions
+  "Cancel": "取消",
+  "Delete": "删除",
+  "Edit": "编辑",
+  "Export": "导出",
+  "Import": "导入",
+  "Add": "添加",
+  "Search": "搜索",
+  "Loading...": "加载中...",
+  "Confirm": "确认",
+  "Close": "关闭",
+  "Next": "下一步",
+  "Back": "上一步",
+  "Submit": "提交",
+  "Update": "更新",
+};

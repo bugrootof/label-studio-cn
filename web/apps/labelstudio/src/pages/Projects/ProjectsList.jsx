@@ -1,6 +1,7 @@
 import chr from "chroma-js";
 import { format } from "date-fns";
 import { useMemo } from "react";
+import { useTranslation } from "@humansignal/core";
 import { NavLink } from "react-router-dom";
 import { CheckIcon, DotsThreeIcon, IconSparks, MinusIcon } from "@humansignal/icons";
 import { Userpic, Button, Dropdown, Tooltip } from "@humansignal/ui";
@@ -36,6 +37,8 @@ export const ProjectsList = ({ projects, currentPage, totalItems, loadNextPage, 
 };
 
 export const EmptyProjectsList = ({ openModal }) => {
+  const { t } = useTranslation();
+
   return (
     <div className={cn("empty-projects-page").toClassName()}>
       <img
@@ -43,16 +46,19 @@ export const EmptyProjectsList = ({ openModal }) => {
         className={cn("empty-projects-page").elem("heidi").toClassName()}
         src={absoluteURL("/static/images/opossum_looking.png")}
       />
-      <h1 className={cn("empty-projects-page").elem("header").toClassName()}>Heidi doesn't see any projects here!</h1>
-      <p>Create one and start labeling your data.</p>
-      <Button onClick={openModal} className="my-8" aria-label="Create new project">
-        Create Project
+      <h1 className={cn("empty-projects-page").elem("header").toClassName()}>
+        {t("Heidi doesn't see any projects here!")}
+      </h1>
+      <p>{t("Create one and start labeling your data.")}</p>
+      <Button onClick={openModal} className="my-8" aria-label={t("Create new project")}>
+        {t("Create Project")}
       </Button>
     </div>
   );
 };
 
 const ProjectCard = ({ project }) => {
+  const { t } = useTranslation();
   const color = useMemo(() => {
     return DEFAULT_CARD_COLORS.includes(project.color) ? null : project.color;
   }, [project]);
@@ -82,9 +88,9 @@ const ProjectCard = ({ project }) => {
         <div className={cn("project-card").elem("header").toClassName()}>
           <div className={cn("project-card").elem("title").toClassName()}>
             <div className={cn("project-card").elem("title-text-wrapper").toClassName()}>
-              <Tooltip title={project.title ?? "New project"}>
+              <Tooltip title={project.title ?? t("New project")}>
                 <div className={cn("project-card").elem("title-text").toClassName()}>
-                  {project.title ?? "New project"}
+                  {project.title ?? t("New project")}
                 </div>
               </Tooltip>
             </div>
@@ -99,8 +105,8 @@ const ProjectCard = ({ project }) => {
               <Dropdown.Trigger
                 content={
                   <Menu contextual>
-                    <Menu.Item href={`/projects/${project.id}/settings`}>Settings</Menu.Item>
-                    <Menu.Item href={`/projects/${project.id}/data?labeling=1`}>Label</Menu.Item>
+                    <Menu.Item href={`/projects/${project.id}/settings`}>{t("Settings")}</Menu.Item>
+                    <Menu.Item href={`/projects/${project.id}/data?labeling=1`}>{t("Label")}</Menu.Item>
                   </Menu>
                 }
               >

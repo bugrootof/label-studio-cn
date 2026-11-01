@@ -46,7 +46,7 @@ export const Menu = forwardRef(
 Menu.Item = MenuItem;
 Menu.Spacer = () => <li className={cn("main-menu").elem("spacer").toClassName()} />;
 Menu.Divider = () => <li className={cn("main-menu").elem("divider").toClassName()} />;
-Menu.Builder = (url, menuItems) => {
+Menu.Builder = (url, menuItems, t = (label) => label) => {
   return (menuItems ?? []).map((item, index) => {
     if (item === "SPACER") return <Menu.Spacer key={index} />;
     if (item === "DIVIDER") return <Menu.Divider key={index} />;
@@ -61,6 +61,8 @@ Menu.Builder = (url, menuItems) => {
       pageLabel = title ?? menuItem;
       pagePath = path;
     }
+
+    pageLabel = typeof pageLabel === "string" ? t(pageLabel) : pageLabel;
 
     if (typeof pagePath === "function") {
       return (

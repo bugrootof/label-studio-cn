@@ -61,3 +61,6 @@ export { annotationNeedsHydration, applyAnnotationHydrationFromApi } from "./lib
 
 // FIT-2442: Telemetry SDK & iFrame Relay
 export * from "./telemetry";
+
+// i18n
+export { i18n, useTranslation, Trans, LS_LOCALE_STORAGE_KEY } from "./lib/i18n";
